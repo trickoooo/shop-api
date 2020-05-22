@@ -9,7 +9,7 @@ router.post('/add-product', (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
- 
+
   req.user
     .createProduct({
       title: title,
@@ -17,17 +17,18 @@ router.post('/add-product', (req, res, next) => {
       imageUrl: imageUrl,
       description: description,
     })
-      .then((product) => {
-        res.status(201).send(product);
-      })
-      .catch((err) => {
-        res.status(400).send(err);
-      });
+    .then((product) => {
+      res.status(201).send(product);
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    });
 });
 
 router.get('/products', (req, res) => {
   //Get products Admin route
-  Product.findAll()
+  req.user
+    .getProducts()
     .then((product) => {
       res.status(200).send(product);
     })
@@ -68,9 +69,9 @@ router.delete('/delete-product/:productId', (req, res) => {
     .then((product) => {
       return product.destroy();
     })
-    .then((result => {
+    .then((result) => {
       res.status(200).send(result);
-    }))
+    })
     .catch((err) => {
       res.status(400).send(err);
     });
