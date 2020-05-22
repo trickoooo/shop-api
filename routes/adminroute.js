@@ -3,25 +3,26 @@ const router = express.Router();
 
 const Product = require('../models/product');
 
-router.post('/add-product', (req, res) => {
+router.post('/add-product', (req, res, next) => {
   // Add product Admin route
   const title = req.body.title;
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-
-  Product.create({
-    title: title,
-    price: price,
-    imageUrl: imageUrl,
-    description: description,
-  })
-    .then((product) => {
-      res.status(201).send(product);
+ 
+  req.user
+    .createProduct({
+      title: title,
+      price: price,
+      imageUrl: imageUrl,
+      description: description,
     })
-    .catch((err) => {
-      res.status(400).send(err);
-    });
+      .then((product) => {
+        res.status(201).send(product);
+      })
+      .catch((err) => {
+        res.status(400).send(err);
+      });
 });
 
 router.get('/products', (req, res) => {
